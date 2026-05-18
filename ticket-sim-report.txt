@@ -1,0 +1,84 @@
+===== 高并发高铁抢票模拟系统压测报告 =====
+
+--- 并发规模: 1000 请求 ---
+算法	成功率	QPS	平均时延(ms)	P95(ms)	总耗时(ms)
+FIFO	25.60%	43478.26	26.26	27.00	21
+PRIORITY	57.20%	125000.00	7.24	8.00	8
+TIME_SLICE	51.80%	166666.67	9.59	10.00	6
+优化前后对比(基线 FIFO -> 其他算法)：
+PRIORITY 相对 FIFO 的 QPS 提升 187.50%，平均时延变化 -19.02 ms
+TIME_SLICE 相对 FIFO 的 QPS 提升 283.33%，平均时延变化 -16.67 ms
+
+--- 并发规模: 5000 请求 ---
+算法	成功率	QPS	平均时延(ms)	P95(ms)	总耗时(ms)
+FIFO	12.20%	500000.00	8.40	10.00	10
+PRIORITY	12.20%	500000.00	9.58	11.00	10
+TIME_SLICE	12.20%	500000.00	7.90	10.00	10
+优化前后对比(基线 FIFO -> 其他算法)：
+PRIORITY 相对 FIFO 的 QPS 提升 0.00%，平均时延变化 1.18 ms
+TIME_SLICE 相对 FIFO 的 QPS 提升 0.00%，平均时延变化 -0.51 ms
+
+--- 并发规模: 10000 请求 ---
+算法	成功率	QPS	平均时延(ms)	P95(ms)	总耗时(ms)
+FIFO	6.10%	833333.33	9.79	11.00	12
+PRIORITY	6.10%	909090.91	11.79	15.00	11
+TIME_SLICE	6.10%	1428571.43	9.69	12.00	7
+优化前后对比(基线 FIFO -> 其他算法)：
+PRIORITY 相对 FIFO 的 QPS 提升 9.09%，平均时延变化 2.00 ms
+TIME_SLICE 相对 FIFO 的 QPS 提升 71.43%，平均时延变化 -0.11 ms
+
+===== 订单样例 =====
+[FIFO]
+Order{orderId='ORD-1', requestId='REQ-257', userId=100257, trainNo='G1005', seatClass='一等座', success=false, reason='被限流', timestamp=1779014955798, queueWaitMs=24, processingTimeMs=0}
+Order{orderId='ORD-2', requestId='REQ-258', userId=100258, trainNo='G1001', seatClass='一等座', success=false, reason='被限流', timestamp=1779014955801, queueWaitMs=27, processingTimeMs=0}
+Order{orderId='ORD-3', requestId='REQ-259', userId=100261, trainNo='G1004', seatClass='一等座', success=false, reason='被限流', timestamp=1779014955801, queueWaitMs=27, processingTimeMs=0}
+Order{orderId='ORD-4', requestId='REQ-260', userId=100262, trainNo='G1005', seatClass='二等座', success=false, reason='被限流', timestamp=1779014955801, queueWaitMs=27, processingTimeMs=0}
+Order{orderId='ORD-5', requestId='REQ-261', userId=100259, trainNo='G1001', seatClass='一等座', success=false, reason='被限流', timestamp=1779014955801, queueWaitMs=27, processingTimeMs=0}
+[PRIORITY]
+Order{orderId='ORD-37', requestId='REQ-1466', userId=100964, trainNo='G1005', seatClass='一等座', success=false, reason='被限流', timestamp=1779014955821, queueWaitMs=7, processingTimeMs=0}
+Order{orderId='ORD-38', requestId='REQ-1468', userId=100966, trainNo='G1001', seatClass='一等座', success=false, reason='被限流', timestamp=1779014955821, queueWaitMs=7, processingTimeMs=0}
+Order{orderId='ORD-39', requestId='REQ-1470', userId=100968, trainNo='G1004', seatClass='二等座', success=false, reason='被限流', timestamp=1779014955821, queueWaitMs=7, processingTimeMs=0}
+Order{orderId='ORD-40', requestId='REQ-1474', userId=100974, trainNo='G1002', seatClass='商务座', success=false, reason='被限流', timestamp=1779014955821, queueWaitMs=7, processingTimeMs=0}
+Order{orderId='ORD-41', requestId='REQ-1480', userId=100983, trainNo='G1003', seatClass='一等座', success=false, reason='被限流', timestamp=1779014955821, queueWaitMs=7, processingTimeMs=0}
+[TIME_SLICE]
+Order{orderId='ORD-32', requestId='REQ-2644', userId=101145, trainNo='G1005', seatClass='一等座', success=false, reason='被限流', timestamp=1779014955840, queueWaitMs=10, processingTimeMs=0}
+Order{orderId='ORD-34', requestId='REQ-2145', userId=101144, trainNo='G1005', seatClass='商务座', success=false, reason='被限流', timestamp=1779014955840, queueWaitMs=10, processingTimeMs=0}
+Order{orderId='ORD-36', requestId='REQ-2646', userId=101146, trainNo='G1002', seatClass='一等座', success=false, reason='被限流', timestamp=1779014955840, queueWaitMs=10, processingTimeMs=0}
+Order{orderId='ORD-38', requestId='REQ-2147', userId=101148, trainNo='G1002', seatClass='二等座', success=false, reason='被限流', timestamp=1779014955840, queueWaitMs=10, processingTimeMs=0}
+Order{orderId='ORD-40', requestId='REQ-2648', userId=101147, trainNo='G1005', seatClass='二等座', success=false, reason='被限流', timestamp=1779014955840, queueWaitMs=10, processingTimeMs=0}
+[FIFO]
+Order{orderId='ORD-48', requestId='REQ-3304', userId=101803, trainNo='G1004', seatClass='二等座', success=false, reason='被限流', timestamp=1779014955855, queueWaitMs=7, processingTimeMs=0}
+Order{orderId='ORD-64', requestId='REQ-3319', userId=101820, trainNo='G1003', seatClass='一等座', success=false, reason='被限流', timestamp=1779014955855, queueWaitMs=7, processingTimeMs=0}
+Order{orderId='ORD-69', requestId='REQ-3325', userId=101825, trainNo='G1003', seatClass='一等座', success=false, reason='被限流', timestamp=1779014955855, queueWaitMs=7, processingTimeMs=0}
+Order{orderId='ORD-70', requestId='REQ-3326', userId=101826, trainNo='G1005', seatClass='二等座', success=false, reason='被限流', timestamp=1779014955855, queueWaitMs=7, processingTimeMs=0}
+Order{orderId='ORD-76', requestId='REQ-3329', userId=101829, trainNo='G1001', seatClass='商务座', success=false, reason='被限流', timestamp=1779014955855, queueWaitMs=7, processingTimeMs=0}
+[PRIORITY]
+Order{orderId='ORD-102', requestId='REQ-10047', userId=102046, trainNo='G1003', seatClass='二等座', success=false, reason='被限流', timestamp=1779014955875, queueWaitMs=8, processingTimeMs=0}
+Order{orderId='ORD-108', requestId='REQ-10081', userId=102081, trainNo='G1001', seatClass='一等座', success=false, reason='被限流', timestamp=1779014955875, queueWaitMs=8, processingTimeMs=0}
+Order{orderId='ORD-116', requestId='REQ-10106', userId=102106, trainNo='G1002', seatClass='商务座', success=false, reason='被限流', timestamp=1779014955875, queueWaitMs=8, processingTimeMs=0}
+Order{orderId='ORD-122', requestId='REQ-10161', userId=102168, trainNo='G1001', seatClass='一等座', success=false, reason='被限流', timestamp=1779014955875, queueWaitMs=8, processingTimeMs=0}
+Order{orderId='ORD-128', requestId='REQ-10181', userId=102180, trainNo='G1001', seatClass='一等座', success=false, reason='被限流', timestamp=1779014955875, queueWaitMs=8, processingTimeMs=0}
+[TIME_SLICE]
+Order{orderId='ORD-126', requestId='REQ-13539', userId=102538, trainNo='G1001', seatClass='一等座', success=false, reason='被限流', timestamp=1779014955891, queueWaitMs=7, processingTimeMs=0}
+Order{orderId='ORD-131', requestId='REQ-16039', userId=102538, trainNo='G1004', seatClass='商务座', success=false, reason='被限流', timestamp=1779014955891, queueWaitMs=6, processingTimeMs=0}
+Order{orderId='ORD-133', requestId='REQ-17039', userId=102538, trainNo='G1004', seatClass='二等座', success=false, reason='被限流', timestamp=1779014955891, queueWaitMs=6, processingTimeMs=0}
+Order{orderId='ORD-138', requestId='REQ-14540', userId=102539, trainNo='G1001', seatClass='商务座', success=false, reason='被限流', timestamp=1779014955891, queueWaitMs=6, processingTimeMs=0}
+Order{orderId='ORD-139', requestId='REQ-15040', userId=102539, trainNo='G1003', seatClass='二等座', success=false, reason='被限流', timestamp=1779014955891, queueWaitMs=6, processingTimeMs=0}
+[FIFO]
+Order{orderId='ORD-93', requestId='REQ-18348', userId=103347, trainNo='G1003', seatClass='一等座', success=false, reason='被限流', timestamp=1779014955910, queueWaitMs=9, processingTimeMs=0}
+Order{orderId='ORD-99', requestId='REQ-18354', userId=103354, trainNo='G1002', seatClass='二等座', success=false, reason='被限流', timestamp=1779014955910, queueWaitMs=9, processingTimeMs=0}
+Order{orderId='ORD-106', requestId='REQ-18362', userId=103360, trainNo='G1004', seatClass='一等座', success=false, reason='被限流', timestamp=1779014955910, queueWaitMs=9, processingTimeMs=0}
+Order{orderId='ORD-107', requestId='REQ-18363', userId=103361, trainNo='G1004', seatClass='二等座', success=false, reason='被限流', timestamp=1779014955910, queueWaitMs=9, processingTimeMs=0}
+Order{orderId='ORD-108', requestId='REQ-18364', userId=103362, trainNo='G1001', seatClass='二等座', success=false, reason='被限流', timestamp=1779014955910, queueWaitMs=9, processingTimeMs=0}
+[PRIORITY]
+Order{orderId='ORD-61', requestId='REQ-29640', userId=103639, trainNo='G1004', seatClass='商务座', success=false, reason='被限流', timestamp=1779014955935, queueWaitMs=10, processingTimeMs=0}
+Order{orderId='ORD-62', requestId='REQ-29645', userId=103645, trainNo='G1005', seatClass='一等座', success=false, reason='被限流', timestamp=1779014955935, queueWaitMs=10, processingTimeMs=0}
+Order{orderId='ORD-64', requestId='REQ-29650', userId=103649, trainNo='G1001', seatClass='一等座', success=false, reason='被限流', timestamp=1779014955935, queueWaitMs=10, processingTimeMs=0}
+Order{orderId='ORD-67', requestId='REQ-29655', userId=103659, trainNo='G1004', seatClass='商务座', success=false, reason='被限流', timestamp=1779014955935, queueWaitMs=10, processingTimeMs=0}
+Order{orderId='ORD-68', requestId='REQ-29662', userId=103662, trainNo='G1001', seatClass='商务座', success=false, reason='被限流', timestamp=1779014955935, queueWaitMs=10, processingTimeMs=0}
+[TIME_SLICE]
+Order{orderId='ORD-50', requestId='REQ-40016', userId=104016, trainNo='G1003', seatClass='一等座', success=false, reason='被限流', timestamp=1779014955957, queueWaitMs=9, processingTimeMs=0}
+Order{orderId='ORD-54', requestId='REQ-42516', userId=104016, trainNo='G1005', seatClass='二等座', success=false, reason='被限流', timestamp=1779014955957, queueWaitMs=8, processingTimeMs=0}
+Order{orderId='ORD-55', requestId='REQ-43016', userId=104016, trainNo='G1002', seatClass='二等座', success=false, reason='被限流', timestamp=1779014955957, queueWaitMs=8, processingTimeMs=0}
+Order{orderId='ORD-56', requestId='REQ-43516', userId=104016, trainNo='G1004', seatClass='商务座', success=false, reason='被限流', timestamp=1779014955957, queueWaitMs=8, processingTimeMs=0}
+Order{orderId='ORD-57', requestId='REQ-44016', userId=104016, trainNo='G1003', seatClass='商务座', success=false, reason='被限流', timestamp=1779014955957, queueWaitMs=8, processingTimeMs=0}
